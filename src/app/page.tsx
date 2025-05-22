@@ -6,108 +6,15 @@ import {
 } from '@ant-design/icons';
 import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
 import axios from 'axios';
+import { HomePageState } from './models/HomePageState'
+import { Host } from './models/Host';
+import { StatusResponse } from './models/StatusResponse';
 
 const { Sider, Content } = Layout;
 
 const HOSTS = ['rp3-retro'];
 
-class File {
-  public directory: string;
-  public extension: string;
-  public name: string;
-  public size: number;
 
-  constructor(directory: string, extension: string, name: string, size: number) {
-    this.directory = directory;
-    this.extension = extension;
-    this.name = name;
-    this.size = size;
-  }
-}
-
-class Disk {
-  public host: string;
-  public disk_name: string;
-  public path: string | null;
-  public date: Date | null;
-  public content: File[];
-
-  constructor(host: string, disk_name: string) {
-    this.host = host;
-    this.disk_name = disk_name;
-    this.path = null;
-    this.date = null;
-    this.content = [];
-  }
-}
-
-interface StatusResponse {
-  host: string;
-  running: boolean;
-  disks: string[];
-}
-
-class Host {
-  public name: string;
-  public disks: string[];
-  public running: boolean;
-
-  constructor(name: string, disks: string[], running: boolean) {
-    this.name = name;
-    this.disks = disks;
-    this.running = running;
-  }
-
-  public static of(response: StatusResponse): Host {
-    return new Host(response.host, response.disks, response.running);
-  }
-
-  public clone(): Host {
-    return new Host(this.name, this.disks, this.running);
-  }
-}
-
-
-
-class HomePageState {
-  public loading: boolean;
-  public hosts: Host[];
-  public selectedHost: string | null;
-  public error: string | null;
-
-  constructor() {
-    this.loading = false;
-    this.hosts = [];
-    this.selectedHost = null;
-    this.error = null;
-  }
-
-  public clone(): HomePageState {
-    const clone = new HomePageState();
-    clone.loading = this.loading;
-    clone.hosts = this.hosts.map(host => host.clone());
-    clone.selectedHost = this.selectedHost;
-    clone.error = this.error;
-    return clone;
-  }
-
-  public addHost(host: Host): void {
-    const index = this.hosts.findIndex(h => h.name === host.name);
-    if (index !== -1) {
-      this.hosts[index] = host;
-    } else {
-      this.hosts.push(host);
-    }
-  }
-
-  public getHost(hostname: string | null): Host | undefined {
-    return this.hosts.find(host => host.name === hostname);
-  }
-
-  public getSelectedHost(): Host | undefined {
-    return this.getHost(this.selectedHost);
-  }
-}
 
 export default function HomePage() {
   const [state, setState] = useState(new HomePageState())
@@ -131,7 +38,8 @@ export default function HomePage() {
       setState(prev => {
         const next = prev.clone();
         const erroMsg = `Error fetching data for host: ${hostname}`;
-        console.log(`[getHostStatus] ${erroMsg}`);
+        console.error(`[getHostStatus] ${erroMsg}`);
+        console.error(error);
         next.error = erroMsg;
         return next;
       });
@@ -161,6 +69,7 @@ export default function HomePage() {
                   key: host.name,
                   label: host.name,
                   icon: <DatabaseOutlined />,
+                  // children: state.getHost(host.name)?.disks?.map?.(disk => ({ key: disk}))
                 })) || []
               }
               onClick={({ key }) => setState(prev => {
