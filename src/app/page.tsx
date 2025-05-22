@@ -4,84 +4,197 @@ import { useEffect, useState } from 'react';
 import {
   DatabaseOutlined,
 } from '@ant-design/icons';
-import { ConfigProvider, theme, Table, Button, Layout, Menu } from 'antd';
+import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
 import axios from 'axios';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
-const dataSource = [
-  { key: '1', name: 'Host A', value: 'Data A' },
-  { key: '2', name: 'Host B', value: 'Data B' },
-];
+const HOSTS = ['rp3-retro'];
 
-const columns = [
-  { title: 'Name', dataIndex: 'name', key: 'name' },
-  { title: 'Value', dataIndex: 'value', key: 'value' },
-];
+class File {
+  public directory: string;
+  public extension: string;
+  public name: string;
+  public size: number;
+
+  constructor(directory: string, extension: string, name: string, size: number) {
+    this.directory = directory;
+    this.extension = extension;
+    this.name = name;
+    this.size = size;
+  }
+}
+
+class Disk {
+  public host: string;
+  public disk_name: string;
+  public path: string | null;
+  public date: Date | null;
+  public content: File[];
+
+  constructor(host: string, disk_name: string) {
+    this.host = host;
+    this.disk_name = disk_name;
+    this.path = null;
+    this.date = null;
+    this.content = [];
+  }
+}
+
+interface StatusResponse {
+  host: string;
+  running: boolean;
+  disks: string[];
+}
+
+class Host {
+  public name: string;
+  public disks: string[];
+  public running: boolean;
+
+  constructor(name: string, disks: string[], running: boolean) {
+    this.name = name;
+    this.disks = disks;
+    this.running = running;
+  }
+
+  public static of(response: StatusResponse): Host {
+    return new Host(response.host, response.disks, response.running);
+  }
+
+  public clone(): Host {
+    return new Host(this.name, this.disks, this.running);
+  }
+}
+
+
+
+class HomePageState {
+  public loading: boolean;
+  public hosts: Host[];
+  public selectedHost: string | null;
+  public error: string | null;
+
+  constructor() {
+    this.loading = false;
+    this.hosts = [];
+    this.selectedHost = null;
+    this.error = null;
+  }
+
+  public clone(): HomePageState {
+    const clone = new HomePageState();
+    clone.loading = this.loading;
+    clone.hosts = this.hosts.map(host => host.clone());
+    clone.selectedHost = this.selectedHost;
+    clone.error = this.error;
+    return clone;
+  }
+
+  public addHost(host: Host): void {
+    const index = this.hosts.findIndex(h => h.name === host.name);
+    if (index !== -1) {
+      this.hosts[index] = host;
+    } else {
+      this.hosts.push(host);
+    }
+  }
+
+  public getHost(hostname: string | null): Host | undefined {
+    return this.hosts.find(host => host.name === hostname);
+  }
+
+  public getSelectedHost(): Host | undefined {
+    return this.getHost(this.selectedHost);
+  }
+}
 
 export default function HomePage() {
-  const [status, setStatus] = useState<any | null>(null);
-  const [collapsed, setCollapsed] = useState(false);
+  const [state, setState] = useState(new HomePageState())
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
-  const fetchData = async () => {
+  const fetchHostStatus = async (hostname: string) => {
+    console.log(`[getHostStatus] host: ${hostname}`);
     try {
-      const response = await axios.get('http://rp3-retro.local:5000/status');
-      setStatus(response.data);
+      setState(prev => {
+        const next = prev.clone();
+        next.loading = true;
+        return next;
+      });
+      const response = await axios.get<StatusResponse>(`http://${hostname}.local:5000/status`);
+      const host = Host.of(response.data);
+      setState(prev => {
+        const next = prev.clone();
+        next.addHost(host)
+        return next;
+      });
     } catch (error) {
-      console.error('Error fetching data from Flask:', error);
-      setStatus('Failed to fetch message.');
+      setState(prev => {
+        const next = prev.clone();
+        const erroMsg = `Error fetching data for host: ${hostname}`;
+        console.log(`[getHostStatus] ${erroMsg}`);
+        next.error = erroMsg;
+        return next;
+      });
+    } finally {
+      setState(prev => {
+        const next = prev.clone();
+        next.loading = false;
+        return next;
+      });
     }
   };
+
+  useEffect(() => {
+    HOSTS.forEach(host => fetchHostStatus(host));
+  }, []);
 
   return (
     <ConfigProvider theme={{
       algorithm: theme.darkAlgorithm,
     }}>
       <Layout>
-        <Sider>
-          <div className="demo-logo-vertical" />
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            items={[
-              {
-                key: '1',
-                icon: <DatabaseOutlined />,
-                label: 'nav 1',
-              },
-              {
-                key: '2',
-                icon: <DatabaseOutlined />,
-                label: 'nav 2',
-              },
-              {
-                key: '3',
-                icon: <DatabaseOutlined />,
-                label: 'nav 3',
-              },
-            ]}
-          >
-
-          </Menu>
-        </Sider>
         <Layout>
-          <Header>
-            Header
-          </Header>
+          <Sider>
+            <Menu
+              items={
+                state?.hosts?.map?.(host => ({
+                  key: host.name,
+                  label: host.name,
+                  icon: <DatabaseOutlined />,
+                })) || []
+              }
+              onClick={({ key }) => setState(prev => {
+                const next = prev.clone();
+                next.selectedHost = key;
+                return next;
+              })}
+              activeKey={state?.selectedHost || undefined}
+            />
+          </Sider>
+
           <Content
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
           >
-            Content
+            <Row gutter={16}>
+              <Col span={24}>
+                {state.selectedHost && (<Descriptions title={state.selectedHost} items={[
+                  {
+                    key: '1',
+                    label: 'Hostname',
+                    children: `${!!state?.getSelectedHost?.()?.name}`,
+                  },
+                  {
+                    key: '2',
+                    label: 'Running',
+                    children: `${!!state?.getSelectedHost?.()?.running}`,
+                  },
+                  {
+                    key: '3',
+                    label: 'Host',
+                    children: state?.getSelectedHost?.()?.disks?.map?.(disk => (<Tag key={disk}>{disk}</Tag>)),
+                  }
+                ]} />)}
+              </Col>
+            </Row>
           </Content>
         </Layout>
       </Layout>
