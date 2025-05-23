@@ -1,59 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  DatabaseOutlined,
-} from '@ant-design/icons';
+import { DatabaseOutlined, CloudServerOutlined, SettingOutlined } from '@ant-design/icons';
 import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
-import axios from 'axios';
+import { fetchHostStatus } from './api/dataServices';
 import { HomePageState } from './models/HomePageState'
-import { Host } from './models/Host';
-import { StatusResponse } from './models/StatusResponse';
+import { HOSTS } from './utils/constants'
 
 const { Sider, Content } = Layout;
-
-const HOSTS = ['rp3-retro'];
-
-
 
 export default function HomePage() {
   const [state, setState] = useState(new HomePageState())
 
-  const fetchHostStatus = async (hostname: string) => {
-    console.log(`[getHostStatus] host: ${hostname}`);
-    try {
-      setState(prev => {
-        const next = prev.clone();
-        next.loading = true;
-        return next;
-      });
-      const response = await axios.get<StatusResponse>(`http://${hostname}.local:5000/status`);
-      const host = Host.of(response.data);
-      setState(prev => {
-        const next = prev.clone();
-        next.addHost(host)
-        return next;
-      });
-    } catch (error) {
-      setState(prev => {
-        const next = prev.clone();
-        const erroMsg = `Error fetching data for host: ${hostname}`;
-        console.error(`[getHostStatus] ${erroMsg}`);
-        console.error(error);
-        next.error = erroMsg;
-        return next;
-      });
-    } finally {
-      setState(prev => {
-        const next = prev.clone();
-        next.loading = false;
-        return next;
-      });
-    }
-  };
-
   useEffect(() => {
-    HOSTS.forEach(host => fetchHostStatus(host));
+    HOSTS.forEach(hostname => fetchHostStatus(hostname, setState));
   }, []);
 
   return (
@@ -65,19 +25,27 @@ export default function HomePage() {
           <Sider>
             <Menu
               items={
-                state?.hosts?.map?.(host => ({
+                [...(state?.hosts?.map?.(host => ({
                   key: host.name,
                   label: host.name,
-                  icon: <DatabaseOutlined />,
-                  // children: state.getHost(host.name)?.disks?.map?.(disk => ({ key: disk}))
-                })) || []
+                  icon: <CloudServerOutlined />,
+                  children: state.getHost(host.name)?.diskNames?.map?.(disk => ({ key: `${host.name}-${disk}`, label: disk, icon: <DatabaseOutlined /> }))
+                })) || []), {
+                  key: 'config',
+                  label: 'Configuration',
+                  icon: <SettingOutlined />,
+                }]
               }
-              onClick={({ key }) => setState(prev => {
+              onClick={({ key, keyPath }) => setState(prev => {
+                const host = keyPath?.[keyPath?.length - 1];
+                const disk = key.replace(`${host}-`, '');
                 const next = prev.clone();
-                next.selectedHost = key;
+                next.selectedHost = host;
+                next.selectedDisk = disk;
                 return next;
               })}
               activeKey={state?.selectedHost || undefined}
+              mode="inline"
             />
           </Sider>
 
@@ -85,21 +53,21 @@ export default function HomePage() {
           >
             <Row gutter={16}>
               <Col span={24}>
-                {state.selectedHost && (<Descriptions title={state.selectedHost} items={[
+                {state.selectedHost && (<Descriptions title={`${state.selectedHost} / ${state.selectedDisk}`} items={[
                   {
                     key: '1',
                     label: 'Hostname',
-                    children: `${!!state?.getSelectedHost?.()?.name}`,
+                    children: `${state?.getSelectedHost?.()?.name}`,
                   },
                   {
                     key: '2',
                     label: 'Running',
-                    children: `${!!state?.getSelectedHost?.()?.running}`,
+                    children: `${state?.getSelectedHost?.()?.running}`,
                   },
                   {
                     key: '3',
-                    label: 'Host',
-                    children: state?.getSelectedHost?.()?.disks?.map?.(disk => (<Tag key={disk}>{disk}</Tag>)),
+                    label: 'Disks',
+                    children: state?.getSelectedHost?.()?.diskNames?.map?.(disk => (<Tag key={disk}>{disk}</Tag>)),
                   }
                 ]} />)}
               </Col>
