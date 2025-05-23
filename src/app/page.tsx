@@ -23,7 +23,6 @@ export default function HomePage() {
       algorithm: theme.darkAlgorithm,
     }}>
       <Layout>
-        <Layout>
           <Sider>
             <Menu
               items={
@@ -59,7 +58,7 @@ export default function HomePage() {
               mode="inline"
             />
           </Sider>
-
+        <Layout>
           <Content
           >
             <Row gutter={16}>
