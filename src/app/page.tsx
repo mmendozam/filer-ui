@@ -22,7 +22,7 @@ export default function HomePage() {
     <ConfigProvider theme={{
       algorithm: theme.darkAlgorithm,
     }}>
-      <Layout>
+      <Layout style={{ minHeight: '100%' }}>
           <Sider>
             <Menu
               items={
