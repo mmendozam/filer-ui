@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { DatabaseOutlined, CloudServerOutlined, SettingOutlined } from '@ant-design/icons';
 import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
 import { fetchHostStatus } from './api/dataServices';
+import ConfigDetails from './components/ConfigDetails';
+import HostDetails from './components/HostDetails';
 import { HomePageState } from './models/HomePageState'
 import { HOSTS } from './utils/constants'
 
@@ -62,25 +64,14 @@ export default function HomePage() {
           >
             <Row gutter={16}>
               <Col span={24}>
-                {state.configMode && (<h2>Config</h2>)}
+                {/* Config section */}
+                {state.configMode && (<ConfigDetails hosts={state.hosts} />)}
 
-                {state.selectedHost && (<Descriptions title={`${state.selectedHost} / ${state.selectedDisk}`} items={[
-                  {
-                    key: '1',
-                    label: 'Hostname',
-                    children: `${state?.getSelectedHost?.()?.name}`,
-                  },
-                  {
-                    key: '2',
-                    label: 'Running',
-                    children: `${state?.getSelectedHost?.()?.running}`,
-                  },
-                  {
-                    key: '3',
-                    label: 'Disks',
-                    children: state?.getSelectedHost?.()?.diskNames?.map?.(disk => (<Tag key={disk}>{disk}</Tag>)),
-                  }
-                ]} />)}
+                {/* Hosts section */}
+                {state.selectedHost && (<HostDetails
+                  host={state.getSelectedHost()!}
+                  selectedDisk={state.selectedDisk}
+                />)}
               </Col>
             </Row>
           </Content>
