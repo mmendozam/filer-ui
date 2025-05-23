@@ -37,11 +37,20 @@ export default function HomePage() {
                 }]
               }
               onClick={({ key, keyPath }) => setState(prev => {
-                const host = keyPath?.[keyPath?.length - 1];
-                const disk = key.replace(`${host}-`, '');
                 const next = prev.clone();
-                next.selectedHost = host;
-                next.selectedDisk = disk;
+
+                if (key === 'config') {
+                  next.configMode = true;
+                  next.selectedHost = null;
+                  next.selectedDisk = null;
+                } else {
+                  const host = keyPath?.[keyPath?.length - 1];
+                  const disk = key.replace(`${host}-`, '');
+                  next.configMode = false;
+                  next.selectedHost = host;
+                  next.selectedDisk = disk;
+                }
+
                 return next;
               })}
               activeKey={state?.selectedHost || undefined}
@@ -53,6 +62,8 @@ export default function HomePage() {
           >
             <Row gutter={16}>
               <Col span={24}>
+                {state.configMode && (<h2>Config</h2>)}
+
                 {state.selectedHost && (<Descriptions title={`${state.selectedHost} / ${state.selectedDisk}`} items={[
                   {
                     key: '1',
