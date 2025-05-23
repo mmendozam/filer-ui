@@ -5,7 +5,7 @@ import { HomePageState } from '../models/HomePageState';
 
 type SetStateFn = React.Dispatch<React.SetStateAction<HomePageState>>;
 
-export const fetchHostStatus = async (hostname: string, setState: SetStateFn) => {
+export const fetchHostInfo = async (hostname: string, setState: SetStateFn) => {
   console.log(`[fetchHostStatus] host: ${hostname}`);
   try {
     setState(prev => {
@@ -38,4 +38,8 @@ export const fetchHostStatus = async (hostname: string, setState: SetStateFn) =>
       return next;
     });
   }
+};
+
+export const fetchDiskInfo = async () => {
+
 };

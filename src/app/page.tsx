@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { DatabaseOutlined, CloudServerOutlined, SettingOutlined } from '@ant-design/icons';
 import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
-import { fetchHostStatus } from './api/dataServices';
+import { fetchHostInfo } from './api/dataServices';
 import ConfigDetails from './components/ConfigDetails';
 import HostDetails from './components/HostDetails';
 import { HomePageState } from './models/HomePageState'
@@ -15,7 +15,7 @@ export default function HomePage() {
   const [state, setState] = useState(new HomePageState())
 
   useEffect(() => {
-    HOSTS.forEach(hostname => fetchHostStatus(hostname, setState));
+    HOSTS.forEach(hostname => fetchHostInfo(hostname, setState));
   }, []);
 
   return (
