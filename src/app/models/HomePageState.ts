@@ -2,6 +2,7 @@ import { Host } from './Host';
 import { Disk } from './Disk';
 
 export class HomePageState {
+  public configMode: boolean;
   public loading: boolean;
   public hosts: Host[];
   public selectedHost: string | null;
@@ -9,6 +10,7 @@ export class HomePageState {
   public error: string | null;
 
   constructor() {
+    this.configMode = false;
     this.loading = false;
     this.hosts = [];
     this.selectedHost = null;
@@ -18,6 +20,7 @@ export class HomePageState {
 
   public clone(): HomePageState {
     const clone = new HomePageState();
+    clone.configMode = this.configMode;
     clone.loading = this.loading;
     clone.hosts = this.hosts.map(host => host.clone());
     clone.selectedHost = this.selectedHost;
