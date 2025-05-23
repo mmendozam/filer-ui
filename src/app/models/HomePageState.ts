@@ -2,31 +2,24 @@ import { Host } from './Host';
 import { Disk } from './Disk';
 
 export class HomePageState {
-  public configMode: boolean;
-  public loading: boolean;
-  public hosts: Host[];
-  public selectedHost: string | null;
-  public selectedDisk: string | null;
-  public error: string | null;
+  public configMode: boolean = false;
+  public loading: boolean = false;
+  public hosts: Host[] = [];
+  public selectedHost: string | null = null;
+  public selectedDisk: string | null = null;
+  public error: string | null = null;
 
-  constructor() {
-    this.configMode = false;
-    this.loading = false;
-    this.hosts = [];
-    this.selectedHost = null;
-    this.selectedDisk = null;
-    this.error = null;
+  constructor(initial?: Partial<HomePageState>) {
+    if (initial) {
+      Object.assign(this, initial);
+    }
   }
 
   public clone(): HomePageState {
-    const clone = new HomePageState();
-    clone.configMode = this.configMode;
-    clone.loading = this.loading;
-    clone.hosts = this.hosts.map(host => host.clone());
-    clone.selectedHost = this.selectedHost;
-    clone.selectedDisk = this.selectedDisk;
-    clone.error = this.error;
-    return clone;
+    return new HomePageState({
+      ...this,
+      hosts: this.hosts.map(host => host.clone()),
+    });
   }
 
   public addHost(host: Host): void {
