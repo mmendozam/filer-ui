@@ -25,7 +25,6 @@ const setStateLoading = (loadig: boolean, setState: SetStateFn) => setState(prev
 
 export const fetchHostInfo = async (hostname: string, setState: SetStateFn) => {
   console.log(`[fetchHostInfo] host: ${hostname}`);
-
   setStateLoading(true, setState);
   axios.get<StatusResponse>(`http://${hostname}.local:5000/status`)
     .then(response => {
@@ -42,7 +41,6 @@ export const fetchHostInfo = async (hostname: string, setState: SetStateFn) => {
 
 export const fetchDiskInfo = async (hostname: string, diskname: string, setState: SetStateFn) => {
   console.log(`[fetchDiskInfo] host/disk: ${hostname}/${diskname}`);
-
   setStateLoading(true, setState);
   axios.get<DiskResponse>(`http://${hostname}.local:5000/disk/${diskname}`)
     .then(response => {
