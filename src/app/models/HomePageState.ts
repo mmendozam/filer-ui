@@ -1,15 +1,18 @@
 import { Host } from './Host';
+import { Disk } from './Disk';
 
 export class HomePageState {
   public loading: boolean;
   public hosts: Host[];
   public selectedHost: string | null;
+  public selectedDisk: string | null;
   public error: string | null;
 
   constructor() {
     this.loading = false;
     this.hosts = [];
     this.selectedHost = null;
+    this.selectedDisk = null;
     this.error = null;
   }
 
@@ -18,6 +21,7 @@ export class HomePageState {
     clone.loading = this.loading;
     clone.hosts = this.hosts.map(host => host.clone());
     clone.selectedHost = this.selectedHost;
+    clone.selectedDisk = this.selectedDisk;
     clone.error = this.error;
     return clone;
   }
@@ -35,7 +39,16 @@ export class HomePageState {
     return this.hosts.find(host => host.name === hostname);
   }
 
-  public getSelectedHost(): Host | undefined {
-    return this.getHost(this.selectedHost);
+  public getSelectedHost(): Host | null {
+    return this.getHost(this.selectedHost) || null;
+  }
+
+  public getSelectedDisk(): Disk | null {
+    let disk = null;
+    const host = this.getSelectedHost();
+    if (host && this.selectedDisk) {
+      disk = host.getDiskData(this.selectedDisk) || null;
+    }
+    return disk;
   }
 }
