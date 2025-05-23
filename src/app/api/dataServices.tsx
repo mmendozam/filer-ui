@@ -44,10 +44,12 @@ export const fetchDiskInfo = async (hostname: string, diskname: string, setState
   setStateLoading(true, setState);
   axios.get<DiskResponse>(`http://${hostname}.local:5000/disk/${diskname}`)
     .then(response => {
+      console.log(`[fetchDiskInfo] response:`);
+      console.log(response);
       const disk = Disk.of(response.data);
       setState(prev => {
         const next = prev.clone();
-        // next.addHost(host);
+        // TODO: update state with response data
         return next;
       });
     })

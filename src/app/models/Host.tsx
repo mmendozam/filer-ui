@@ -1,25 +1,27 @@
-import { StatusResponse } from '../models/StatusResponse';
-import { Disk } from '../models/Disk'
+import { StatusResponse, Disk } from '../models';
 
 export class Host {
-  public name: string;
-  public diskNames: string[];
-  public disksData: Disk[];
-  public running: boolean;
+  public name: string = '';
+  public diskNames: string[] = [];
+  public disksData: Disk[] = [];
+  public running: boolean = false;
 
-  constructor(name: string, disks: string[], running: boolean) {
-    this.name = name;
-    this.diskNames = disks;
-    this.running = running;
-    this.disksData = []
+  constructor(initial?: Partial<Host>) {
+    if (initial) {
+      Object.assign(this, initial);
+    }
   }
 
   public static of(response: StatusResponse): Host {
-    return new Host(response.host, response.disks, response.running);
+    return new Host({
+      name: response.host,
+      diskNames: response.disks,
+      running: response.running
+    });
   }
 
   public clone(): Host {
-    return new Host(this.name, this.diskNames, this.running);
+    return new Host(this);
   }
 
   public getDiskData(diskName: string): Disk | undefined {
