@@ -7,9 +7,10 @@ import {
   HomePageState
 } from '../models';
 
-type SetStateFn = React.Dispatch<React.SetStateAction<HomePageState>>;
+export type SetStateFn = React.Dispatch<React.SetStateAction<HomePageState>>;
 
 const handleErrorResponse = (errorMsg: string, setState: SetStateFn) => {
+  console.error(errorMsg);
   setState(prev => {
     const next = prev.clone();
     next.error = errorMsg;
@@ -44,12 +45,9 @@ export const fetchDiskInfo = async (hostname: string, diskname: string, setState
   setStateLoading(true, setState);
   axios.get<DiskResponse>(`http://${hostname}.local:5000/disk/${diskname}`)
     .then(response => {
-      console.log(`[fetchDiskInfo] response:`);
-      console.log(response);
-      const disk = Disk.of(response.data);
       setState(prev => {
         const next = prev.clone();
-        // TODO: update state with response data
+        next.addDiskData(Disk.of(response.data));
         return next;
       });
     })

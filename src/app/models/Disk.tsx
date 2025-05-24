@@ -15,7 +15,11 @@ export class Disk {
 
   public static of(response: DiskResponse): Disk {
     return new Disk({
-      // date: response.date
+      host: response.host,
+      name: response.disk_name,
+      path: response.path,
+      date: response.date,
+      content: response.content
     });
   }
 }

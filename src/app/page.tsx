@@ -23,48 +23,48 @@ export default function HomePage() {
       algorithm: theme.darkAlgorithm,
     }}>
       <Layout style={{ minHeight: '100%' }}>
-          <Sider>
-            <Menu
-              items={
-                [...(state?.hosts?.map?.(host => ({
-                  key: host.name,
-                  label: host.name,
-                  icon: <CloudServerOutlined />,
-                  children: state.getHost(host.name)?.diskNames?.map?.(disk => ({ key: `${host.name}-${disk}`, label: disk, icon: <DatabaseOutlined /> }))
-                })) || []), {
-                  key: 'config',
-                  label: 'Configuration',
-                  icon: <SettingOutlined />,
-                }]
+        <Sider>
+          <Menu
+            items={
+              [...(state?.hosts?.map?.(host => ({
+                key: host.name,
+                label: host.name,
+                icon: <CloudServerOutlined />,
+                children: state.getHost(host.name)?.diskNames?.map?.(disk => ({ key: `${host.name}-${disk}`, label: disk, icon: <DatabaseOutlined /> }))
+              })) || []), {
+                key: 'config',
+                label: 'Configuration',
+                icon: <SettingOutlined />,
+              }]
+            }
+            onClick={({ key, keyPath }) => setState(prev => {
+              const next = prev.clone();
+
+              if (key === 'config') {
+                next.configMode = true;
+                next.selectedHost = null;
+                next.selectedDisk = null;
+              } else {
+                const host = keyPath?.[keyPath?.length - 1];
+                const disk = key.replace(`${host}-`, '');
+                next.configMode = false;
+                next.selectedHost = host;
+                next.selectedDisk = disk;
               }
-              onClick={({ key, keyPath }) => setState(prev => {
-                const next = prev.clone();
 
-                if (key === 'config') {
-                  next.configMode = true;
-                  next.selectedHost = null;
-                  next.selectedDisk = null;
-                } else {
-                  const host = keyPath?.[keyPath?.length - 1];
-                  const disk = key.replace(`${host}-`, '');
-                  next.configMode = false;
-                  next.selectedHost = host;
-                  next.selectedDisk = disk;
-                }
-
-                return next;
-              })}
-              activeKey={state?.selectedHost || undefined}
-              mode="inline"
-            />
-          </Sider>
+              return next;
+            })}
+            activeKey={state?.selectedHost || undefined}
+            mode="inline"
+          />
+        </Sider>
         <Layout>
           <Content
           >
             <Row gutter={16}>
               <Col span={24}>
                 {/* Config section */}
-                {state.configMode && (<ConfigDetails hosts={state.hosts} />)}
+                {state.configMode && (<ConfigDetails hosts={state.hosts} setState={setState} />)}
 
                 {/* Hosts section */}
                 {state.selectedHost && (<HostDetails

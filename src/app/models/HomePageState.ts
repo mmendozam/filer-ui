@@ -47,4 +47,14 @@ export class HomePageState {
     }
     return disk;
   }
+
+  public getDiskData(hostname: string, diskname: string): Disk | null {
+    const host = this.getHost(hostname);
+    return host?.getDiskData?.(diskname) || null;
+  }
+
+  public addDiskData(disk: Disk): void {
+    const host = this.getHost(disk.host);
+    host?.addDiskData(disk);
+  }
 }
