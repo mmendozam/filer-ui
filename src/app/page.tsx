@@ -26,16 +26,19 @@ export default function HomePage() {
         <Sider>
           <Menu
             items={
-              [...(state?.hosts?.map?.(host => ({
-                key: host.name,
-                label: host.name,
-                icon: <CloudServerOutlined />,
-                children: state.getHost(host.name)?.diskNames?.map?.(disk => ({ key: `${host.name}-${disk}`, label: disk, icon: <DatabaseOutlined /> }))
-              })) || []), {
-                key: 'config',
-                label: 'Configuration',
-                icon: <SettingOutlined />,
-              }]
+              [
+                {
+                  key: 'config',
+                  label: 'Configuration',
+                  icon: <SettingOutlined />,
+                },
+                ...(state?.hosts?.map?.(host => ({
+                  key: host.name,
+                  label: host.name,
+                  icon: <CloudServerOutlined />,
+                  children: state.getHost(host.name)?.diskNames?.map?.(disk => ({ key: `${host.name}-${disk}`, label: disk, icon: <DatabaseOutlined /> }))
+                })) || [])
+              ]
             }
             onClick={({ key, keyPath }) => setState(prev => {
               const next = prev.clone();
