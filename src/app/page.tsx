@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { DatabaseOutlined, CloudServerOutlined, SettingOutlined } from '@ant-design/icons';
-import { ConfigProvider, theme, Layout, Menu, Row, Col, Descriptions, Tag } from 'antd';
+import { ConfigProvider, theme, Layout, Menu, Row, Col } from 'antd';
 import { fetchHostInfo } from './api/dataServices';
 import ConfigDetails from './components/ConfigDetails';
 import HostDetails from './components/HostDetails';
