@@ -19,7 +19,7 @@ export class Disk {
             name: response.disk_name,
             path: response.path,
             date: response.date,
-            content: response.content,
+            content: response.content.map(item => new FilerFile(item)),
         });
     }
 }
