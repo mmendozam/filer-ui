@@ -9,4 +9,12 @@ export class FilerFile {
             Object.assign(this, initial);
         }
     }
+
+    public isFolder(): boolean {
+        return this.extension === '<folder>';
+    }
+
+    public isFile(): boolean {
+        return this.extension !== '<folder>';
+    }
 }
