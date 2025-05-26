@@ -9,7 +9,7 @@ type DiskDetailsProps = {
 
 export default function HostManager({ host, setState }: DiskDetailsProps) {
     return (
-        <Card title="Mange host">
+        <Card>
             {host.diskNames.map((diskname) => (
                 <Row key={`${host.name}-${diskname}`} gutter={[16, 16]}>
                     <Col span={6}>{diskname}</Col>
