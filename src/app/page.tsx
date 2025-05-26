@@ -33,7 +33,9 @@ export default function HomePage() {
                                 label: 'Configuration',
                                 icon: <SettingOutlined />,
                             },
-                            ...(state?.hosts?.map?.((host) => ({
+                            ...(state?.hosts
+                                ?.sort((a, b) => a.name.localeCompare(b.name))
+                                ?.map?.((host) => ({
                                 key: host.name,
                                 label: host.name,
                                 icon: <CloudServerOutlined />,
