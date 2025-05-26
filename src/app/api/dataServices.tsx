@@ -56,3 +56,24 @@ export const fetchDiskInfo = async (hostname: string, diskname: string, setState
         )
         .finally(() => setStateLoading(false, setState));
 };
+
+export const refreshDiskInfo = async (hostname: string, diskname: string, setState: SetStateFn) => {
+    console.log(`[refreshDiskInfo] host/disk: ${hostname}/${diskname}`);
+    setStateLoading(true, setState);
+    axios
+        .get<DiskResponse>(`http://${hostname}.local:5000/scan/${diskname}`)
+        .then((response) => {
+            setState((prev) => {
+                const next = prev.clone();
+                next.addDiskData(Disk.of(response.data));
+                return next;
+            });
+        })
+        .catch(() =>
+            handleErrorResponse(
+                `Error fetching data for host/disk: ${hostname}/${diskname}`,
+                setState
+            )
+        )
+        .finally(() => setStateLoading(false, setState));
+};
