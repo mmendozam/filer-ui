@@ -57,4 +57,9 @@ export class HomePageState {
         const host = this.getHost(disk.host);
         host?.addDiskData(disk);
     }
+
+    public clearDisk(hostname: string, diskname: string): void {
+        const host = this.getHost(hostname);
+        host?.clearDisk(diskname);
+    }
 }
