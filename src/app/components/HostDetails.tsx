@@ -19,11 +19,19 @@ export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
             title: 'Extension',
             dataIndex: 'extension',
             key: 'extension',
+            sorter: (a, b) => a.extension.localeCompare(b.extension),
+        },
+        {
+            title: 'Size',
+            dataIndex: 'size',
+            key: 'size',
+            sorter: (a, b) => a.size - b.size,
         },
     ];
 
