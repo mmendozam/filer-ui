@@ -1,8 +1,7 @@
-import { Card, Row, Col, Divider } from 'antd';
-import { SetStateFn } from '../api/dataServices';
+import { Row } from 'antd';
 import { Host } from '../models/Host';
 import HostManager from './HostManager';
-import DiskDetails from './DiskDetails';
+import { SetStateFn } from '../api/dataServices';
 
 type ConfigDetailsProps = {
     hosts: Host[];
@@ -13,15 +12,7 @@ export default function ConfigDetails({ hosts, setState }: ConfigDetailsProps) {
     return (
         <Row gutter={[16, 16]}>
             {hosts.map((host) => (
-                <Col key={host.name} span={12}>
-                    <Card title={host.name}>
-                        <HostManager host={host} setState={setState} />
-                        <Divider />
-                        {host.disksData.map((disk) => (
-                            <DiskDetails key={`${host.name}-${disk.name}`} disk={disk} />
-                        ))}
-                    </Card>
-                </Col>
+                <HostManager key={host.name} host={host} setState={setState} />
             ))}
         </Row>
     );

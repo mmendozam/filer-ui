@@ -1,6 +1,8 @@
-import { Card, Row, Col, Button } from 'antd';
+import { useState } from 'react';
+import { Card, Row, Col, Button, Select, Divider } from 'antd';
 import { fetchDiskInfo, refreshDiskInfo, SetStateFn } from '../api/dataServices';
 import { Host } from '../models';
+import DiskDetails from './DiskDetails';
 
 type DiskDetailsProps = {
     host: Host;
@@ -8,39 +10,65 @@ type DiskDetailsProps = {
 };
 
 export default function HostManager({ host, setState }: DiskDetailsProps) {
+    const [selectedDiskname, setSelectedDisk] = useState(host?.diskNames?.sort?.()?.[0] || '');
+
     return (
-        <Card>
-            {host.diskNames.map((diskname) => (
-                <Row key={`${host.name}-${diskname}`} gutter={[16, 16]}>
-                    <Col span={6}>{diskname}</Col>
-                    <Col span={6}>
-                        <Button block onClick={() => fetchDiskInfo(host.name, diskname, setState)}>
-                            Fetch
-                        </Button>
-                    </Col>
-                    <Col span={6}>
-                        <Button
-                            block
-                            onClick={() => refreshDiskInfo(host.name, diskname, setState)}
-                        >
-                            Refresh
-                        </Button>
-                    </Col>
-                    <Col span={6}>
-                        <Button
-                            block
-                            danger
-                            onClick={() => setState(prev => {
-                                const next = prev.clone();
-                                next.clearDisk(host.name, diskname)
-                                return next;
-                            })}
-                        >
-                            Clear
-                        </Button>
+        <Col key={host.name} span={12}>
+            <Card title={host.name}>
+                <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                        <Row gutter={[16, 16]}>
+                            <Col span={12}>
+                                <Select
+                                    onChange={(value: string) => setSelectedDisk(value)}
+                                    options={host.diskNames.map((diskName) => ({
+                                        label: diskName,
+                                        value: diskName,
+                                    }))}
+                                    style={{ width: '100%' }}
+                                    defaultValue={host?.diskNames?.sort?.()?.[0]}
+                                ></Select>
+                            </Col>
+                            <Col span={12} />
+                            <Col span={6}>
+                                <Button
+                                    block
+                                    onClick={() => fetchDiskInfo(host.name, selectedDiskname, setState)}
+                                >
+                                    Fetch
+                                </Button>
+                            </Col>
+                            <Col span={6}>
+                                <Button
+                                    block
+                                    onClick={() =>
+                                        refreshDiskInfo(host.name, selectedDiskname, setState)
+                                    }
+                                >
+                                    Refresh
+                                </Button>
+                            </Col>
+                            <Col span={6}>
+                                <Button
+                                    block
+                                    danger
+                                    onClick={() =>
+                                        setState((prev) => {
+                                            const next = prev.clone();
+                                            next.clearDisk(host.name, selectedDiskname);
+                                            return next;
+                                        })
+                                    }
+                                >
+                                    Clear
+                                </Button>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
-            ))}
-        </Card>
+                <Divider />
+                <DiskDetails disk={host.getDiskData(selectedDiskname)} />
+            </Card>
+        </Col>
     );
 }

@@ -73,12 +73,9 @@ export default function HomePage() {
                     <Content>
                         <Row gutter={[16, 16]}>
                             <Col span={24}>
-                                {/* Config section */}
                                 {state.configMode && (
                                     <ConfigDetails hosts={state.hosts} setState={setState} />
                                 )}
-
-                                {/* Hosts section */}
                                 {state.selectedHost && (
                                     <HostDetails
                                         host={state.getSelectedHost()!}
