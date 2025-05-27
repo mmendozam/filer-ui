@@ -19,7 +19,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                 <Row gutter={[16, 16]}>
                     <Col span={24}>
                         <Row gutter={[16, 16]}>
-                            <Col span={12}>
+                            <Col span={6}>
                                 <Select
                                     onChange={(value: string) => setSelectedDisk(value)}
                                     options={host.diskNames.map((diskName) => ({
@@ -30,12 +30,13 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     defaultValue={host?.diskNames?.sort?.()?.[0]}
                                 ></Select>
                             </Col>
-                            <Col span={12} />
                             <Col span={6}>
                                 <Button
                                     block
                                     icon={<CloudDownloadOutlined />}
-                                    onClick={() => fetchDiskInfo(host.name, selectedDiskname, setState)}
+                                    onClick={() =>
+                                        fetchDiskInfo(host.name, selectedDiskname, setState)
+                                    }
                                 >
                                     Fetch
                                 </Button>
