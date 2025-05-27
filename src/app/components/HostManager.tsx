@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, Row, Col, Button, Select, Divider } from 'antd';
 import { CloudDownloadOutlined, CloudSyncOutlined, DeleteOutlined } from '@ant-design/icons';
 import { fetchDiskInfo, refreshDiskInfo, SetStateFn } from '../api/dataServices';
-import { Host } from '../models';
+import { Host, HostManagerState } from '../models';
 import DiskDetails from './DiskDetails';
 
 type DiskDetailsProps = {
@@ -11,7 +11,9 @@ type DiskDetailsProps = {
 };
 
 export default function HostManager({ host, setState }: DiskDetailsProps) {
-    const [selectedDiskname, setSelectedDisk] = useState(host?.diskNames?.sort?.()?.[0] || '');
+    const [managerState, setManagerState] = useState(
+        new HostManagerState({ selectedDiskname: host?.diskNames?.sort?.()?.[0] || '' })
+    );
 
     return (
         <Col key={host.name} xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
@@ -21,7 +23,13 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                         <Row gutter={[16, 16]}>
                             <Col span={6}>
                                 <Select
-                                    onChange={(value: string) => setSelectedDisk(value)}
+                                    onChange={(value: string) =>
+                                        setManagerState((prev) => {
+                                            const next = prev.clone();
+                                            next.selectedDiskname = value;
+                                            return next;
+                                        })
+                                    }
                                     options={host.diskNames.map((diskName) => ({
                                         label: diskName,
                                         value: diskName,
@@ -35,7 +43,11 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     block
                                     icon={<CloudDownloadOutlined />}
                                     onClick={() =>
-                                        fetchDiskInfo(host.name, selectedDiskname, setState)
+                                        fetchDiskInfo(
+                                            host.name,
+                                            managerState.selectedDiskname,
+                                            setState
+                                        )
                                     }
                                 >
                                     Fetch
@@ -46,7 +58,11 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     block
                                     icon={<CloudSyncOutlined />}
                                     onClick={() =>
-                                        refreshDiskInfo(host.name, selectedDiskname, setState)
+                                        refreshDiskInfo(
+                                            host.name,
+                                            managerState.selectedDiskname,
+                                            setState
+                                        )
                                     }
                                 >
                                     Refresh
@@ -60,7 +76,10 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     onClick={() =>
                                         setState((prev) => {
                                             const next = prev.clone();
-                                            next.clearDisk(host.name, selectedDiskname);
+                                            next.clearDisk(
+                                                host.name,
+                                                managerState.selectedDiskname
+                                            );
                                             return next;
                                         })
                                     }
@@ -72,7 +91,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                     </Col>
                 </Row>
                 <Divider />
-                <DiskDetails disk={host.getDiskData(selectedDiskname)} />
+                <DiskDetails disk={host.getDiskData(managerState.selectedDiskname)} />
             </Card>
         </Col>
     );
