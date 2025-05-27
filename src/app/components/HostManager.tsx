@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card, Row, Col, Button, Select, Divider } from 'antd';
+import { CloudDownloadOutlined, CloudSyncOutlined, DeleteOutlined } from '@ant-design/icons';
 import { fetchDiskInfo, refreshDiskInfo, SetStateFn } from '../api/dataServices';
 import { Host } from '../models';
 import DiskDetails from './DiskDetails';
@@ -33,6 +34,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                             <Col span={6}>
                                 <Button
                                     block
+                                    icon={<CloudDownloadOutlined />}
                                     onClick={() => fetchDiskInfo(host.name, selectedDiskname, setState)}
                                 >
                                     Fetch
@@ -41,6 +43,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                             <Col span={6}>
                                 <Button
                                     block
+                                    icon={<CloudSyncOutlined />}
                                     onClick={() =>
                                         refreshDiskInfo(host.name, selectedDiskname, setState)
                                     }
@@ -52,6 +55,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                 <Button
                                     block
                                     danger
+                                    icon={<DeleteOutlined />}
                                     onClick={() =>
                                         setState((prev) => {
                                             const next = prev.clone();
