@@ -24,8 +24,8 @@ export class Host {
         return new Host(this);
     }
 
-    public getDiskData(diskname: string): Disk | null {
-        return this.disksData.find((diskData) => diskData.name == diskname) || null;
+    public getDiskData(diskname: string): Disk | undefined {
+        return this.disksData.find((diskData) => diskData.name == diskname);
     }
 
     public addDiskData(disk: Disk): void {
@@ -38,15 +38,12 @@ export class Host {
     }
 
     public clearDisk(diskname: string): boolean {
-        console.log(`[clearDisk] diskname: ${diskname}`);
         const index = this.disksData.findIndex((d) => d.name === diskname && d.host === this.name);
-        console.log(this.disksData);
-        console.log(`[clearDisk] index: ${index}`);
         if (index !== -1) {
             this.disksData.splice(index, 1);
             return true;
         } else {
-            console.log(`No disk found to clear: ${diskname}`);
+            console.warn(`No disk found to clear: ${diskname}`);
             return false;
         }
     }

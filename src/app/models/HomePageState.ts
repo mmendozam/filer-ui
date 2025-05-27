@@ -5,7 +5,7 @@ export class HomePageState {
     public configMode: boolean = false;
     public loading: boolean = false;
     public hosts: Host[] = [];
-    public selectedHost: string | null = null;
+    public selectedHost: string | undefined = undefined;
     public selectedDisk: string | null = null;
     public error: string | null = null;
 
@@ -31,7 +31,7 @@ export class HomePageState {
         }
     }
 
-    public getHost(hostname: string | null): Host | undefined {
+    public getHost(hostname: string | null | undefined): Host | undefined {
         return this.hosts.find((host) => host.name === hostname);
     }
 
