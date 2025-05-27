@@ -6,7 +6,7 @@ export class HomePageState {
     public loading: boolean = false;
     public hosts: Host[] = [];
     public selectedHost: string | undefined = undefined;
-    public selectedDisk: string | null = null;
+    public selectedDisk: string = '';
     public error: string | null = null;
 
     constructor(initial?: Partial<HomePageState>) {
