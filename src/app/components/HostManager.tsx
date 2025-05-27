@@ -13,7 +13,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
     const [selectedDiskname, setSelectedDisk] = useState(host?.diskNames?.sort?.()?.[0] || '');
 
     return (
-        <Col key={host.name} span={12}>
+        <Col key={host.name} xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
             <Card title={host.name}>
                 <Row gutter={[16, 16]}>
                     <Col span={24}>
