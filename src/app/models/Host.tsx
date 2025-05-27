@@ -24,8 +24,8 @@ export class Host {
         return new Host(this);
     }
 
-    public getDiskData(diskname: string): Disk | null {
-        return this.disksData.find((diskData) => diskData.name == diskname) || null;
+    public getDiskData(diskname: string): Disk | undefined {
+        return this.disksData.find((diskData) => diskData.name == diskname);
     }
 
     public addDiskData(disk: Disk): void {
