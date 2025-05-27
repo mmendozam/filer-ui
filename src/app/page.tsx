@@ -34,27 +34,26 @@ export default function HomePage() {
                                 icon: <SettingOutlined />,
                             },
                             ...(state?.hosts
-                                ?.sort((a, b) => a.name.localeCompare(b.name))
+                                ?.sort?.((a, b) => a.name.localeCompare(b.name))
                                 ?.map?.((host) => ({
-                                key: host.name,
-                                label: host.name,
-                                icon: <CloudServerOutlined />,
-                                children: state
-                                    .getHost(host.name)
-                                    ?.diskNames?.map?.((disk) => ({
-                                        key: `${host.name}-${disk}`,
-                                        label: disk,
-                                        icon: <DatabaseOutlined />,
-                                    })),
-                            })) || []),
+                                    key: host.name,
+                                    label: host.name,
+                                    icon: <CloudServerOutlined />,
+                                    children: state
+                                        .getHost(host.name)
+                                        ?.diskNames?.map?.((disk) => ({
+                                            key: `${host.name}-${disk}`,
+                                            label: disk,
+                                            icon: <DatabaseOutlined />,
+                                        })),
+                                })) || []),
                         ]}
                         onClick={({ key, keyPath }) =>
                             setState((prev) => {
                                 const next = prev.clone();
-
                                 if (key === 'config') {
                                     next.configMode = true;
-                                    next.selectedHost = null;
+                                    next.selectedHost = undefined;
                                     next.selectedDisk = null;
                                 } else {
                                     const host = keyPath?.[keyPath?.length - 1];
@@ -63,17 +62,16 @@ export default function HomePage() {
                                     next.selectedHost = host;
                                     next.selectedDisk = disk;
                                 }
-
                                 return next;
                             })
                         }
-                        activeKey={state?.selectedHost || undefined}
+                        activeKey={state?.selectedHost}
                         mode="inline"
                     />
                 </Sider>
                 <Layout>
                     <Content>
-                        <Row gutter={16}>
+                        <Row gutter={[16, 16]}>
                             <Col span={24}>
                                 {/* Config section */}
                                 {state.configMode && (
