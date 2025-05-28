@@ -19,7 +19,7 @@ const setStateLoading = (loadig: boolean, setState: SetStateFn) =>
         return next;
     });
 
-export const fetchHostInfo = async (hostname: string, setState: SetStateFn) => {
+export const fetchHostStatus = async (hostname: string, setState: SetStateFn) => {
     console.log(`[fetchHostInfo] host: ${hostname}`);
     setStateLoading(true, setState);
     axios
