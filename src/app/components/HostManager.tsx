@@ -6,7 +6,7 @@ import {
     CloudSyncOutlined,
     DeleteOutlined,
 } from '@ant-design/icons';
-import { fetchDiskInfo, refreshDiskInfo, SetStateFn } from '../api/dataServices';
+import { fetchHostStatus, fetchDiskInfo, refreshDiskInfo, SetStateFn } from '../api/dataServices';
 import { Host, HostManagerState } from '../models';
 import DiskDetails from './DiskDetails';
 
@@ -30,14 +30,8 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                 <Button
                                     block
                                     icon={<ApiOutlined />}
-                                    iconPosition='end'
-                                    onClick={() =>
-                                        fetchDiskInfo(
-                                            host.name,
-                                            managerState.selectedDiskname,
-                                            setState
-                                        )
-                                    }
+                                    iconPosition="end"
+                                    onClick={() => fetchHostStatus(host.name, setState)}
                                 >
                                     Check Host
                                 </Button>
@@ -64,7 +58,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                 <Button
                                     block
                                     icon={<CloudDownloadOutlined />}
-                                    iconPosition='end'
+                                    iconPosition="end"
                                     onClick={() =>
                                         fetchDiskInfo(
                                             host.name,
@@ -80,7 +74,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                 <Button
                                     block
                                     icon={<CloudSyncOutlined />}
-                                    iconPosition='end'
+                                    iconPosition="end"
                                     onClick={() =>
                                         refreshDiskInfo(
                                             host.name,
@@ -97,7 +91,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     block
                                     danger
                                     icon={<DeleteOutlined />}
-                                    iconPosition='end'
+                                    iconPosition="end"
                                     onClick={() =>
                                         setState((prev) => {
                                             const next = prev.clone();
