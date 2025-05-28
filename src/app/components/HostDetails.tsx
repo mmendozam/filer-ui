@@ -70,7 +70,7 @@ export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
                     ]}
                 />
                 <Divider />
-                <Table size='small' columns={columns} dataSource={host?.getDiskData?.(selectedDisk)?.content || []} />
+                <Table size='small' columns={columns} dataSource={host?.getDisk?.(selectedDisk)?.content || []} />
             </Card>
         </>
     );

@@ -25,6 +25,8 @@ export class HomePageState {
     public addHost(host: Host): void {
         const index = this.hosts.findIndex((h) => h.name === host.name);
         if (index !== -1) {
+            // Recovering cached disks
+            host.disks = this.hosts[index].disks;
             this.hosts[index] = host;
         } else {
             this.hosts.push(host);
@@ -43,19 +45,19 @@ export class HomePageState {
         let disk = null;
         const host = this.getSelectedHost();
         if (host && this.selectedDisk) {
-            disk = host.getDiskData(this.selectedDisk) || null;
+            disk = host.getDisk(this.selectedDisk) || null;
         }
         return disk;
     }
 
     public getDiskData(hostname: string, diskname: string): Disk | null {
         const host = this.getHost(hostname);
-        return host?.getDiskData?.(diskname) || null;
+        return host?.getDisk?.(diskname) || null;
     }
 
     public addDiskData(disk: Disk): void {
         const host = this.getHost(disk.host);
-        host?.addDiskData(disk);
+        host?.addDisk(disk);
     }
 
     public clearDisk(hostname: string, diskname: string): void {

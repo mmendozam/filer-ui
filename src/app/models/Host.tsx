@@ -24,11 +24,11 @@ export class Host {
         return new Host(this);
     }
 
-    public getDiskData(diskname: string): Disk | undefined {
+    public getDisk(diskname: string): Disk | undefined {
         return this.disks.find((diskData) => diskData.name == diskname);
     }
 
-    public addDiskData(disk: Disk): void {
+    public addDisk(disk: Disk): void {
         const index = this.disks.findIndex((d) => d.name === disk.name && d.host === disk.host);
         if (index !== -1) {
             this.disks[index] = disk;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Row, Col, Button, Select, Divider } from 'antd';
+import { Card, Row, Col, Button, Select, Divider, Tag } from 'antd';
 import {
     ApiOutlined,
     CloudDownloadOutlined,
@@ -36,7 +36,9 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     Check Host
                                 </Button>
                             </Col>
-                            <Col span={18} />
+                            <Col span={18}>
+                                Running: <Tag>{`${host.running}`}</Tag>
+                            </Col>
                             <Col span={6}>
                                 <Select
                                     onChange={(value: string) =>
@@ -110,7 +112,7 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                     </Col>
                 </Row>
                 <Divider />
-                <DiskDetails disk={host.getDiskData(managerState.selectedDiskname)} />
+                <DiskDetails disk={host.getDisk(managerState.selectedDiskname)} />
             </Card>
         </Col>
     );
