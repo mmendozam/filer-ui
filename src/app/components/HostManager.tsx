@@ -33,11 +33,11 @@ export default function HostManager({ host, setState }: DiskDetailsProps) {
                                     iconPosition="end"
                                     onClick={() => fetchHostStatus(host.name, setState)}
                                 >
-                                    Check Host
+                                    Check
                                 </Button>
                             </Col>
                             <Col span={18}>
-                                Running: <Tag>{`${host.running}`}</Tag>
+                                Running: <Tag color={host.running ? 'red' :'green'}>{`${host.running}`}</Tag>
                             </Col>
                             <Col span={6}>
                                 <Select
