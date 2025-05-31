@@ -13,24 +13,28 @@ export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
             title: 'Directory',
             dataIndex: 'directory',
             key: 'directory',
+            width: '40%',
             sorter: (a, b) => a.directory.localeCompare(b.directory),
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            width: '30%',
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
             title: 'Extension',
             dataIndex: 'extension',
             key: 'extension',
+            width: '15%',
             sorter: (a, b) => a.extension.localeCompare(b.extension),
         },
         {
             title: 'Size',
             dataIndex: 'size',
             key: 'size',
+            width: '15%',
             sorter: (a, b) => a.size - b.size,
         },
     ];
