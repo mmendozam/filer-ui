@@ -65,7 +65,7 @@ export default function HomePage() {
                                 return next;
                             })
                         }
-                        activeKey={state?.selectedHost}
+                        // activeKey={state?.selectedHost}
                         mode="inline"
                     />
                 </Sider>

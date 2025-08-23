@@ -4,7 +4,7 @@ import { Host, FilerFile } from '../models';
 
 type HostDetailsProps = {
     host: Host;
-    selectedDisk: string;
+    selectedDisk: string | null;
 };
 
 export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
@@ -22,6 +22,7 @@ export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
             key: 'name',
             width: '30%',
             sorter: (a, b) => a.name.localeCompare(b.name),
+            onFilter: (value, record) => record.name.includes(value as string), // TODO filter is not working
         },
         {
             title: 'Extension',
@@ -74,7 +75,7 @@ export default function HostDetails({ host, selectedDisk }: HostDetailsProps) {
                     ]}
                 />
                 <Divider />
-                <Table size='small' columns={columns} dataSource={host?.getDisk?.(selectedDisk)?.content || []} />
+                <Table size='small' columns={columns} dataSource={host?.getDisk?.(selectedDisk || '')?.content || []} />
             </Card>
         </>
     );
